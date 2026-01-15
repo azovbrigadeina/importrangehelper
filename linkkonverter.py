@@ -1,7 +1,6 @@
 import streamlit as st
 import re
 
-# Fungsi untuk mengambil ID Spreadsheet
 def extract_spreadsheet_id(url):
     pattern = r"/spreadsheets/d/([a-zA-Z0-9-_]+)"
     match = re.search(pattern, url)
@@ -9,94 +8,94 @@ def extract_spreadsheet_id(url):
         return match.group(1)
     return None
 
-# --- KONFIGURASI HALAMAN ---
-st.set_page_config(page_title="ImportRange Generator - Muaro Jambi", page_icon="📊")
+st.set_page_config(page_title="Anjab Bagor - ImportRange", page_icon="📊")
 
-# --- CUSTOM CSS (Nuansa Ukraina: Biru & Kuning) ---
+# --- CSS UNTUK NUANSA UKRAINA ---
 st.markdown("""
     <style>
-    /* Mengubah warna background header */
+    /* Latar belakang halaman (Biru) */
     .stApp {
-        background-color: #ffffff;
+        background: linear-gradient(180deg, #0057B7 50%, #FFD700 100%);
     }
-    /* Warna judul utama (Biru) */
+
+    /* Kotak Putih Transparan untuk Input agar tulisan terbaca jelas */
+    .stTextInput, .stCheckbox, .stButton, div[data-testid="stVerticalBlock"] > div {
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 15px;
+        border-radius: 15px;
+        margin-bottom: 10px;
+    }
+
+    /* Judul Utama */
     h1 {
-        color: #0057B7 !important;
-        border-bottom: 5px solid #FFD700;
-        padding-bottom: 10px;
+        color: #FFD700 !important;
+        text-shadow: 2px 2px #000000;
+        text-align: center;
     }
-    /* Warna sub-header */
-    h3 {
+
+    /* Label Input */
+    label {
         color: #0057B7 !important;
+        font-weight: bold !important;
     }
-    /* Gaya tombol */
+
+    /* Tombol */
     .stButton>button {
-        background-color: #FFD700 !important;
-        color: #0057B7 !important;
-        font-weight: bold;
-        border: 2px solid #0057B7 !important;
-        border-radius: 10px;
-        width: 100%;
-    }
-    .stButton>button:hover {
         background-color: #0057B7 !important;
         color: #FFD700 !important;
+        border-radius: 10px;
+        border: 2px solid #FFD700;
+        height: 3em;
+        width: 100%;
     }
+
     /* Footer */
     .footer {
         position: fixed;
         left: 0;
         bottom: 0;
         width: 100%;
-        background-color: #0057B7;
+        background-color: #002d5e;
         color: #FFD700;
         text-align: center;
-        padding: 10px;
-        font-weight: bold;
+        padding: 5px;
+        font-size: 14px;
+        z-index: 100;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# --- ISI APLIKASI ---
-st.title("📊 ImportRange Generator")
-st.markdown("Alat bantu ekstraksi data otomatis untuk efisiensi pelaporan.")
+# --- KONTEN ---
+st.title("🇺🇦 ImportRange Generator")
+st.markdown("<p style='text-align: center; color: white;'>Memudahkan administrasi data di Kab. Muaro Jambi</p>", unsafe_allow_html=True)
 
 with st.container():
-    st.subheader("📍 Input Data Sumber")
-    url_input = st.text_input("Link URL Google Sheets:", 
-                              placeholder="Tempel link di sini...")
+    url_input = st.text_input("🔗 Link URL Google Sheets Sumber:", placeholder="Paste link di sini...")
     
     col1, col2 = st.columns(2)
     with col1:
-        sheet_name = st.text_input("Nama Sheet:", placeholder="Contoh: Sheet1")
+        sheet_name = st.text_input("📄 Nama Sheet:", placeholder="Contoh: Sheet1")
     with col2:
-        cell_range = st.text_input("Lokasi Cell:", placeholder="Contoh: A1")
+        cell_range = st.text_input("🎯 Lokasi Cell:", placeholder="Contoh: A1")
 
-    st.subheader("⚙️ Pengaturan")
-    only_numbers = st.checkbox("Ekstrak Angka Saja (Default Aktif)", value=True)
-    
-st.markdown("---")
+    only_numbers = st.checkbox("🔢 Ambil Angka Saja (Auto-Clean)", value=True)
 
-if st.button("🚀 GENERATE RUMUS SEKARANG"):
+if st.button("🚀 BUAT RUMUS"):
     if url_input and sheet_name and cell_range:
         spreadsheet_id = extract_spreadsheet_id(url_input)
-        
         if spreadsheet_id:
             base_import = f'IMPORTRANGE("{spreadsheet_id}", "{sheet_name}!{cell_range}")'
-            
             if only_numbers:
-                # Rumus dengan proteksi TO_TEXT dan VALUE
                 final_formula = f'=VALUE(REGEXEXTRACT(TO_TEXT({base_import}), "\\d+"))'
             else:
                 final_formula = f'={base_import}'
             
-            st.success("✅ Rumus Berhasil Dibuat!")
+            st.success("✅ Salin rumus ini ke sheet Anda:")
             st.code(final_formula, language="excel")
-            st.info("Salin rumus di atas dan tempelkan pada Google Sheets Anda.")
         else:
-            st.error("❌ Link URL tidak valid! Pastikan link benar.")
+            st.error("Link tidak valid.")
     else:
-        st.warning("⚠️ Mohon isi semua kolom terlebih dahulu.")
+        st.warning("Data belum lengkap.")
 
 # --- FOOTER ---
 st.markdown("""
