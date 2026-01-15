@@ -8,100 +8,73 @@ def extract_spreadsheet_id(url):
         return match.group(1)
     return None
 
-st.set_page_config(page_title="Slava Ukraini - ImportRange", page_icon="🇺🇦")
+st.set_page_config(page_title="Anjab Bagor - ImportRange", page_icon="📊")
 
-# --- CSS COSMETIC SLAVA UKRAINI ---
+# --- CSS PERBAIKAN (Placeholder Hide on Focus) ---
 st.markdown("""
     <style>
-    /* Background Bendera Ukraina yang Halus */
     .stApp {
-        background: linear-gradient(180deg, #0057B7 0%, #0057B7 50%, #FFD700 50%, #FFD700 100%);
-        background-attachment: fixed;
+        background: linear-gradient(180deg, #0057B7 0%, #FFD700 100%);
     }
 
-    /* Animasi Teks Slava Ukraini */
-    .slava-text {
-        text-align: center;
-        font-size: 2.5rem;
-        font-weight: 900;
-        color: #FFD700;
-        text-shadow: 3px 3px #000, 0 0 20px #FFD700;
-        margin-bottom: 0px;
-        font-family: 'Arial Black', sans-serif;
-    }
-
-    /* Kotak Input Putih Bersih */
+    /* Kotak Input */
     div[data-baseweb="input"], .stTextInput input {
         background-color: #ffffff !important;
         color: #000000 !important;
         -webkit-text-fill-color: #000000 !important;
-        border: 2px solid #0057B7 !important;
-        border-radius: 10px !important;
+        font-weight: 500;
     }
     
-    /* Placeholder Hilang Saat Fokus */
-    input::placeholder { color: #555555 !important; opacity: 1 !important; }
-    input:focus::placeholder { color: transparent !important; }
-
-    /* Container dengan Glassmorphism di bagian tengah */
-    div[data-testid="stVerticalBlock"] > div {
-        background-color: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        padding: 25px;
-        border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.3);
+    /* Placeholder standar (Abu-abu Tua) */
+    input::placeholder {
+        color: #444444 !important;
+        opacity: 1 !important;
+    }
+    
+    /* MENGHILANGKAN PLACEHOLDER SAAT DIKLIK (FOCUS) */
+    input:focus::placeholder {
+        color: transparent !important;
+        -webkit-text-fill-color: transparent !important;
     }
 
     /* Label Input */
     label {
-        color: #ffffff !important;
-        font-weight: bold !important;
-        text-shadow: 1px 1px 3px #000;
-        font-size: 1.1rem !important;
-    }
-
-    /* Tombol Heroik */
-    .stButton>button {
-        background: linear-gradient(90deg, #0057B7, #0080ff) !important;
         color: #FFD700 !important;
-        font-weight: 900;
-        font-size: 1.2rem;
-        border: 2px solid #FFD700;
-        border-radius: 50px;
-        transition: 0.4s ease;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-    }
-    
-    .stButton>button:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 20px #FFD700;
-        color: #ffffff !important;
+        font-weight: bold !important;
+        text-shadow: 1px 1px #000000;
     }
 
-    /* Footer tetap */
+    /* Tombol */
+    .stButton>button {
+        background-color: #FFD700 !important;
+        color: #0057B7 !important;
+        font-weight: 800;
+        border: 2px solid #ffffff;
+        border-radius: 10px;
+    }
+
+    /* Footer */
     .footer {
         position: fixed;
         left: 0;
         bottom: 0;
         width: 100%;
-        background-color: rgba(0, 58, 122, 0.9);
+        background-color: #003a7a;
         color: #FFD700;
         text-align: center;
-        padding: 10px;
+        padding: 8px;
         font-weight: bold;
-        border-top: 3px solid #FFD700;
-        z-index: 1000;
+        z-index: 999;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# --- HEADER SLAVA UKRAINI ---
-st.markdown('<p class="slava-text">SLAVA UKRAINI! 🇺🇦</p>', unsafe_allow_html=True)
-st.markdown("<h3 style='text-align: center; color: white; margin-top:-10px;'>Gerombolan ImportRange - Muaro Jambi</h3>", unsafe_allow_html=True)
+# --- ISI APLIKASI ---
+st.markdown("<h1 style='text-align: center; color: white; text-shadow: 2px 2px #000;'>🇺🇦 ImportRange Generator</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: white; font-weight: bold;'>Tim Anjab Bagor - Kab. Muaro Jambi</p>", unsafe_allow_html=True)
 
 with st.container():
-    url_input = st.text_input("🔗 Link Spreadsheet Sumber:", placeholder="Tempel link di sini...")
+    url_input = st.text_input("🔗 Link URL Google Sheets Sumber:", placeholder="Tempel link spreadsheet di sini...")
     
     col1, col2 = st.columns(2)
     with col1:
@@ -109,12 +82,10 @@ with st.container():
     with col2:
         cell_range = st.text_input("🎯 Lokasi Cell:", placeholder="Misal: A1")
 
-    st.markdown("<style>div.stCheckbox > label > div[data-testid='stMarkdownContainer'] > p {color: #FFD700 !important; font-weight: bold; font-size: 18px; text-shadow: 1px 1px 2px #000;}</style>", unsafe_allow_html=True)
-    only_numbers = st.checkbox("🔢 Ekstrak Angka (Hero Mode)", value=True)
+    st.markdown("<style>div.stCheckbox > label > div[data-testid='stMarkdownContainer'] > p {color: white !important; font-weight: bold;}</style>", unsafe_allow_html=True)
+    only_numbers = st.checkbox("🔢 Ambil Angka Saja (Auto-Extract)", value=True)
 
-st.markdown("<br>", unsafe_allow_html=True)
-
-if st.button("🚀 GENERATE FREEDOM FORMULA"):
+if st.button("🚀 GENERATE RUMUS"):
     if url_input and sheet_name and cell_range:
         spreadsheet_id = extract_spreadsheet_id(url_input)
         if spreadsheet_id:
@@ -124,17 +95,11 @@ if st.button("🚀 GENERATE FREEDOM FORMULA"):
             else:
                 final_formula = f'={base_import}'
             
-            st.balloons() # Efek perayaan
-            st.success("✨ Rumus Siap Digunakan!")
+            st.success("✨ Rumus Berhasil Dibuat!")
             st.code(final_formula, language="excel")
         else:
-            st.error("❌ Link tidak valid!")
+            st.error("❌ Link tidak valid.")
     else:
-        st.warning("⚠️ Data belum lengkap, Kawan!")
+        st.warning("⚠️ Data belum lengkap.")
 
-# --- FOOTER ---
-st.markdown("""
-    <div class="footer">
-        Dibuat dengan ❤️ oleh Tim Anjab Bagor Kab Muaro Jambi | Heroiam Slava!
-    </div>
-    """, unsafe_allow_html=True)
+st.markdown("""<div class="footer">Dibuat dengan ❤️ oleh Tim Anjab Bagor Kab Muaro Jambi</div>""", unsafe_allow_html=True)
